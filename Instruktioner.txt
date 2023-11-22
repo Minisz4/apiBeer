@@ -1,1 +1,23 @@
+1. Skapa en html
+2. Skapa css
+3. Skapa JavaScript-fil
+4. Search page
+5. Skapa en tom sökningslista
+6. Skapa input för search för att söka en öl
+7. Begränsa listan till max tio sökresultat
+8. Skapa en funktion, landing page, search page
+9. Random button
+
+
+skapa seach/input fältet
+search resultat kontroleras om det finns giltig namn på öl
+input fältet resultat sparas i sökningslista.
+sökningslistan med innehållet vissas i separat kort/page, som kan heta för söknings history eller nånting lika.
+I history listan man kan välja dem sökta och lada igen samma på landing page.
+
+ 
+resultat ska visas på landing page (image och beskrivning)
+skapa random generator att generera rondom öl
+random generator knappen koppla till URL - https://api.punkapi.com/v2/beers/random och visar info on landing page/kort 
+
 
