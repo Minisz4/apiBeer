@@ -7,11 +7,19 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="searchings-container" id="searched-container">
+      <div id="searched-content"></div>
+    <div class="container__navigation" id="searched-navigation">
+      <button class="container__prev-page" id="prev-page">◁</button>
+      <span class="container__current-page" id="current-page">  </span>
+      <button class="container__next-page" id="next-page">▷</button>
+    </div>
+  
     <div id="search-box">
       <label for="site-search">Search the site:</label>
       <input type="search" id="site-search" placeholder="search" />
-      
-      <button>Search</button></div>
+      <button id="search-btn">Search</button>
+    </div>
     
     <button id="random-beer-btn">Random Beer</button>
     <div id="result-box">
