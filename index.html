@@ -7,26 +7,34 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="searchings-container" id="searched-container">
-      <div id="searched-content"></div>
-    <div class="container__navigation" id="searched-navigation">
-      <button class="container__prev-page" id="prev-page">◁</button>
-      <span class="container__current-page" id="current-page">  </span>
-      <button class="container__next-page" id="next-page">▷</button>
-    </div>
-  
-    <div id="search-box">
-      <label for="site-search">Search the site:</label>
-      <input type="search" id="site-search" placeholder="search" />
-      <button id="search-btn">Search</button>
-    </div>
-    
-    <button id="random-beer-btn">Random Beer</button>
-    <div id="result-box">
-      <div id="img-box"></div>
-      <h1 id="beer-name"></h1>
-      <div id="description-box"></div>
-      <button id="info-btn"></button>
+    <div id="wrapper">
+      <div class="searchings-container" id="searched-container">
+        <div id="searched-content"></div>
+        <div class="container__navigation" id="searched-navigation">
+          <button class="container__prev-page" id="prev-page">◁</button>
+          <span class="container__current-page" id="current-page"> </span>
+          <button class="container__next-page" id="next-page">▷</button>
+        </div>
+
+        <div id="search-box">
+          <label for="site-search">Search the site:</label>
+          <input type="search" id="site-search" placeholder="search" />
+          <button id="search-btn">Search</button>
+      </div>
+      <button id="random-beer-btn">Random Beer</button>
+      </div>
+      
+
+      <div id="result-box">
+        <div id="img-box">
+          <img src="https://images.punkapi.com/v2/keg.png" alt="beer">
+        </div>
+        <div id="beer-info">
+        <h1 id="beer-name">Beer</h1>
+        <div id="description-box">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus dolor similique iste rerum odio maxime ad eligendi totam quibusdam corrupti. Tempore excepturi harum recusandae, assumenda eos sunt. Non, autem consequatur!</div>
+        <button id="info-btn">See more</button>
+        </div>
+      </div>
     </div>
     <script src="main.js"></script>
   </body>
