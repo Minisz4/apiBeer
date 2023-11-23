@@ -14,10 +14,14 @@ const nextPageButton = document.getElementById('next-page');
 const currentPageSpan = document.getElementById('current-page');
 const beerImage = document.getElementById('image');
 const infobtn = document.getElementById('info-btn');
-let selectedLi = null;
 const beersPerPage = 10;
+let totalPages = 0;
+let selectedLi = null;
+let lastSearchWord = "";
 let currentPage = 1;
 let displayedBeers = [];
+
+
 
 searchButton.addEventListener('click', () => {
   const searchWord = input.value.trim();
@@ -29,6 +33,8 @@ searchButton.addEventListener('click', () => {
 });
 
 randomBeerButton.addEventListener('click', getRandomBeer);
+
+//----------- Get random function
 
 async function getRandomBeer() {
   searchedContent.textContent = "";
@@ -46,34 +52,58 @@ async function getRandomBeer() {
   }
 }
 
+
+//----------- Search function
+
 async function searchBeer (searchWord) {
   searchedContent.textContent = "";
+  lastSearchWord = searchWord;
+  let pageForTotal = 1;
+  let totalResultBeers = [];
+  let moreResults = true;
+
   try {
     const response = await fetch(`${searUrlApi}?beer_name=${searchWord}&page=${currentPage}&per_page=${beersPerPage}`);
     if (!response.ok) {
       throw new Error(`HTTP Error!: ${response.status}`);
     }  
     const result = await response.json();
+    console.log(result);
     displayedBeers = result;
+    while (moreResults) {
+      const totalSearchedBeersResponse = await fetch(`${searUrlApi}?beer_name=${searchWord}&page=${pageForTotal}&per_page=80`);
+      const data = await totalSearchedBeersResponse.json();
+
+      if (data.length > 0) {
+        totalResultBeers = totalResultBeers.concat(data);
+        pageForTotal++;
+      } else {
+        moreResults = false;
+      }
+    }
+    totalBeers = totalResultBeers.length;
+    console.log(totalBeers);
+
     if (displayedBeers.length === 0) {
       displayNoResults();
     } else {
       displayBeerList(displayedBeers);
-      updatePageDisplay(displayedBeers.length);
-      setupClickListener();
+      updatePageDisplay();
     }
-}   
+}  
 catch (error) {
   console.log("Error fetching message :", error);
   }
 }
+
+
 
 function displayNoResults() {
   searchedContent.innerHTML = "<p>No results found for the given search term.</p>";
 }
 
 function displayNoImage() {
-  imgBox.textContent = ""; // 
+  imgBox.textContent = ""; 
   const noImagePlaceholder = document.createElement('img');
   noImagePlaceholder.src = 'https://as2.ftcdn.net/v2/jpg/00/89/55/15/1000_F_89551596_LdHAZRwz3i4EM4J0NHNHy2hEUYDfXc0j.jpg'; // Provide the path to your default image
   noImagePlaceholder.alt = 'No Image';
@@ -113,12 +143,26 @@ function displayBeerList(beers) {
   searchedContent.appendChild(beerList);
 };
 
-function updatePageDisplay(totalBeers) {
-  const totalPages = Math.ceil(totalBeers / beersPerPage);
-  console.log(`beers ${totalBeers}, beers per page ${beersPerPage}, current page ${currentPage}, total pages ${totalPages}`);
+function updatePageDisplay() {
+  totalPages = Math.ceil( totalBeers / beersPerPage);
   currentPageSpan.textContent = `${currentPage} / ${totalPages}`;
-  return totalPages;
 }
+
+nextPageButton.addEventListener("click", function () {
+    if ( currentPage < totalPages) {
+      currentPage++;
+    searchBeer(lastSearchWord);
+    updatePageDisplay();
+    }
+});
+
+prevPageButton.addEventListener("click", function () {
+  if (currentPage > 1) {
+    currentPage--;
+    searchBeer(lastSearchWord);
+    updatePageDisplay();
+  }
+})
 
 function displayBeerDetails(beer) {
   imgBox.textContent = "";
@@ -181,19 +225,3 @@ function setupButtonListeners() {
 
 setupButtonListeners();
 
-nextPageButton.addEventListener('click', async () => {
-  currentPage++;
-  await searchBeer(input.value.trim());
-  const totalPages = updatePageDisplay(displayedBeers.length);
-  if (currentPage > totalPages) {
-    currentPage = totalPages;
-  }
-});
-
-prevPageButton.addEventListener('click', async () => {
-  if (currentPage > 1) {
-    currentPage--;
-    await searchBeer(input.value.trim());
-    updatePageDisplay(displayedBeers.length);
-  }
-});
