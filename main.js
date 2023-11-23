@@ -12,6 +12,9 @@ const infoBtn = document.getElementById('info-btn');
 const prevPageButton = document.getElementById('prev-page');
 const nextPageButton = document.getElementById('next-page');
 const currentPageSpan = document.getElementById('current-page');
+const beerImage = document.getElementById('image');
+const infobtn = document.getElementById('info-btn');
+let selectedLi = null;
 const beersPerPage = 10;
 let currentPage = 1;
 
@@ -57,6 +60,7 @@ async function searchBeer (searchWord) {
     } else {
       displayBeerList(beers);
       updatePageDisplay();
+      setupClickListener();
     }
 }   
 catch (error) {
@@ -67,11 +71,20 @@ catch (error) {
 function displayNoResults() {
   searchedContent.innerHTML = "<p>No results found for the given search term.</p>";
 }
+
+function displayNoImage() {
+  imgBox.innerHTML = "<p>No image!!!</p>";
+}
+
+
 function displayBeer(beer) {
   searchedContent.innerHTML = "";
   const beerElement = document.createElement('p');
   beerElement.classList.add('one-beer');
   beerElement.innerHTML = beer.name;
+  beerElement.addEventListener('click', () =>  {
+    displayBeerDetails(beer);
+  });
   searchedContent.appendChild(beerElement);
 }
 
@@ -84,7 +97,11 @@ function displayBeerList(beers) {
   beers.forEach(beer => { 
     const beerItem = document.createElement('li');
     beerItem.textContent = beer.name;
-    beerItem.addEventListener('click', () => displayBeerDetails(beer));
+    beerItem.addEventListener('click', () =>  {
+      clearSelectedLi();
+      markSelectedLi(beerItem);
+      displayBeerDetails(beer);
+    });
     beerList.appendChild(beerItem);
 
   });
@@ -97,6 +114,64 @@ function updatePageDisplay() {
 }
 
 function displayBeerDetails(beer) {
-  // Add code to display the details of the selected beer
+  imgBox.innerHTML = "";
+  if (beer.image_url !==null && beer.image_url !=="") { 
+  beerImage.src = beer.image_url;
+  imgBox.appendChild(beerImage);
+} else {
+  displayNoImage();
+}
+  beerName.textContent = beer.name;
+ 
   console.log(beer);
 }
+
+function clearSelectedLi() {
+  const liElements = document.querySelectorAll('.beer-list li');
+  liElements.forEach(li => {
+    li.classList.remove('selected');
+  });
+}
+
+function markSelectedLi(beerItem) {
+  beerItem.classList.add('selected');
+}
+
+
+function setupButtonListeners() {
+  infoBtn.addEventListener("click", async () => {
+    const selectedBeerName = beerName.textContent;
+    descriptionBox.innerHTML= "";
+    
+    try {
+      const response = await fetch(`${searUrlApi}?beer_name=${selectedBeerName}`);
+      if (!response.ok) {
+        throw new Error(`HTTP Error!: ${response.status}`);
+      }
+      const beers = await response.json();
+      if (beers.length > 0) {
+        const selectedBeer = beers[0];
+
+        // Display volume information in descriptionBox
+        const volumeInfo = `
+          <p>Description: ${selectedBeer.description}</p>
+          <p>Volume: ${selectedBeer.volume.value} ${selectedBeer.volume.unit}</p>
+          <p>ABV: ${selectedBeer.abv}%</p>
+          <p>IBU: ${selectedBeer.ibu}</p>
+          <p>Tagline: ${selectedBeer.tagline}</p>
+        `;
+        descriptionBox.innerHTML = volumeInfo;
+        
+       
+      
+
+        // Handle other additional information or actions
+        console.log("Additional Info for", selectedBeerName, ":", selectedBeer);
+      }
+    } catch (error) {
+      console.log("Error fetching additional info:", error);
+    }
+  });
+}
+
+setupButtonListeners();
