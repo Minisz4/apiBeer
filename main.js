@@ -21,7 +21,7 @@ let lastSearchWord = "";
 let currentPage = 1;
 let displayedBeers = [];
 
-
+//----------- Event lisnener for search-box
 
 searchButton.addEventListener('click', () => {
   const searchWord = input.value.trim();
