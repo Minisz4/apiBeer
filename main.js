@@ -27,9 +27,7 @@ searchButton.addEventListener('click', () => {
   const searchWord = input.value.trim();
   if (searchWord !== '') {
     searchBeer(searchWord);
-  } else {
-    getRandomBeer();
-  }
+  } 
 });
 
 randomBeerButton.addEventListener('click', getRandomBeer);
@@ -38,7 +36,6 @@ randomBeerButton.addEventListener('click', getRandomBeer);
 
 async function getRandomBeer() {
   searchedContent.textContent = "";
-
   try {
     const response = await fetch(`${searUrlApi}/random`);
     if (!response.ok) {
@@ -56,12 +53,15 @@ async function getRandomBeer() {
 //----------- Search function
 
 async function searchBeer (searchWord) {
+  /* if (searchWord.trim() === "") {
+    console.log("Sökordet är tomt");
+    displayNoResults();
+    return; */
   searchedContent.textContent = "";
   lastSearchWord = searchWord;
   let pageForTotal = 1;
   let totalResultBeers = [];
   let moreResults = true;
-
   try {
     const response = await fetch(`${searUrlApi}?beer_name=${searchWord}&page=${currentPage}&per_page=${beersPerPage}`);
     if (!response.ok) {
@@ -117,6 +117,8 @@ function displayBeer(beer) {
   beerElement.textContent = beer.name;
   beerElement.addEventListener('click', () =>  {
     displayBeerDetails(beer);
+    beerElement.style.backgroundColor = "yellow";
+    document.querySelector(".one-beer").classList.add("showPil");
     descriptionBox.textContent= "";
   });
   searchedContent.appendChild(beerElement);
