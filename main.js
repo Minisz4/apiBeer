@@ -17,7 +17,7 @@ const infobtn = document.getElementById('info-btn');
 let selectedLi = null;
 const beersPerPage = 10;
 let currentPage = 1;
-
+let displayedBeers = [];
 
 searchButton.addEventListener('click', () => {
   const searchWord = input.value.trim();
@@ -29,7 +29,6 @@ searchButton.addEventListener('click', () => {
 });
 
 randomBeerButton.addEventListener('click', getRandomBeer);
-
 
 async function getRandomBeer() {
   searchedContent.innerHTML = "";
@@ -47,19 +46,20 @@ async function getRandomBeer() {
   }
 }
 
-
 async function searchBeer (searchWord) {
+  searchedContent.innerHTML = "";
   try {
     const response = await fetch(`${searUrlApi}?beer_name=${searchWord}&page=${currentPage}&per_page=${beersPerPage}`);
     if (!response.ok) {
       throw new Error(`HTTP Error!: ${response.status}`);
     }  
-    const beers = await response.json();
-    if (beers.length === 0) {
+    const result = await response.json();
+    displayedBeers = result;
+    if (displayedBeers.length === 0) {
       displayNoResults();
     } else {
-      displayBeerList(beers);
-      updatePageDisplay();
+      displayBeerList(displayedBeers);
+      updatePageDisplay(displayedBeers.length);
       setupClickListener();
     }
 }   
@@ -73,9 +73,12 @@ function displayNoResults() {
 }
 
 function displayNoImage() {
-  imgBox.innerHTML = "<p>No image!!!</p>";
+  imgBox.innerHTML = ""; // 
+  const noImagePlaceholder = document.createElement('img');
+  noImagePlaceholder.src = 'https://as2.ftcdn.net/v2/jpg/00/89/55/15/1000_F_89551596_LdHAZRwz3i4EM4J0NHNHy2hEUYDfXc0j.jpg'; // Provide the path to your default image
+  noImagePlaceholder.alt = 'No Image';
+  imgBox.appendChild(noImagePlaceholder);
 }
-
 
 function displayBeer(beer) {
   searchedContent.innerHTML = "";
@@ -84,6 +87,7 @@ function displayBeer(beer) {
   beerElement.innerHTML = beer.name;
   beerElement.addEventListener('click', () =>  {
     displayBeerDetails(beer);
+    descriptionBox.innerHTML= "";
   });
   searchedContent.appendChild(beerElement);
 }
@@ -98,6 +102,7 @@ function displayBeerList(beers) {
     const beerItem = document.createElement('li');
     beerItem.textContent = beer.name;
     beerItem.addEventListener('click', () =>  {
+      descriptionBox.innerHTML= "";
       clearSelectedLi();
       markSelectedLi(beerItem);
       displayBeerDetails(beer);
@@ -108,9 +113,11 @@ function displayBeerList(beers) {
   searchedContent.appendChild(beerList);
 };
 
-function updatePageDisplay() {
-  const totalPages = Math.ceil(beersPerPage / currentPage);
+function updatePageDisplay(totalBeers) {
+  const totalPages = Math.ceil(totalBeers / beersPerPage);
+  console.log(`beers ${totalBeers}, beers per page ${beersPerPage}, current page ${currentPage}, total pages ${totalPages}`);
   currentPageSpan.textContent = `${currentPage} / ${totalPages}`;
+  return totalPages;
 }
 
 function displayBeerDetails(beer) {
@@ -131,12 +138,11 @@ function clearSelectedLi() {
   liElements.forEach(li => {
     li.classList.remove('selected');
   });
-}
+};
 
 function markSelectedLi(beerItem) {
   beerItem.classList.add('selected');
 }
-
 
 function setupButtonListeners() {
   infoBtn.addEventListener("click", async () => {
@@ -153,19 +159,19 @@ function setupButtonListeners() {
         const selectedBeer = beers[0];
 
         // Display volume information in descriptionBox
+        const displayHops = selectedBeer.ingredients.hops.map(hop => hop.name).join(', ');
+        const displayMalt = selectedBeer.ingredients.malt.map(malt => malt.name).join(', ');
+
         const volumeInfo = `
           <p>Description: ${selectedBeer.description}</p>
           <p>Volume: ${selectedBeer.volume.value} ${selectedBeer.volume.unit}</p>
           <p>ABV: ${selectedBeer.abv}%</p>
-          <p>IBU: ${selectedBeer.ibu}</p>
-          <p>Tagline: ${selectedBeer.tagline}</p>
+          <p>Malt: ${displayMalt}</p>
+          <p>Hops: ${displayHops}</p>
+          <p>Food paring: ${selectedBeer.food_pairing}</p>
+          <p>Brew Tips: ${selectedBeer.brewers_tips}</p>
         `;
         descriptionBox.innerHTML = volumeInfo;
-        
-       
-      
-
-        // Handle other additional information or actions
         console.log("Additional Info for", selectedBeerName, ":", selectedBeer);
       }
     } catch (error) {
@@ -175,3 +181,20 @@ function setupButtonListeners() {
 }
 
 setupButtonListeners();
+
+nextPageButton.addEventListener('click', async () => {
+  currentPage++;
+  await searchBeer(input.value.trim());
+  const totalPages = updatePageDisplay(displayedBeers.length);
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+});
+
+prevPageButton.addEventListener('click', async () => {
+  if (currentPage > 1) {
+    currentPage--;
+    await searchBeer(input.value.trim());
+    updatePageDisplay(displayedBeers.length);
+  }
+});

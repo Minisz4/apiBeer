@@ -33,6 +33,10 @@
   height: 20rem;
 }
 
+h1 {
+    margin-bottom: 0.5rem;
+}
+
 ul {
   list-style: none;
   display: grid;
@@ -42,7 +46,12 @@ ul {
 
 li {
   margin: 0 auto;
-  
+  margin-bottom: 0.3rem;
+}
+
+p {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
 }
 
 .container__navigation {
@@ -63,7 +72,7 @@ li {
 
 #result-box {
   margin-right: 23rem;
-  margin-top: 10rem;
+  margin-top: 5rem;
   height: 20rem;
   width: 30rem;
 }
@@ -78,6 +87,8 @@ li {
   border-width: 0.1rem;
 }
 
+
+
 #img-box {
   display: grid;
   width: 100%;
@@ -91,8 +102,10 @@ img {
 }
 
 #beer-info {
+    padding: 1rem;
+    padding-bottom: 4rem;
   margin-top: 1rem;
-  height: 20rem;
+  height: auto;
   background-color: rgba(213, 173, 53, 0.518);
   border-style: solid;
   border-color: rgba(0, 0, 0, 0.242);
@@ -163,7 +176,8 @@ button:disabled {
 }
 
 label {
-  margin-left: 35%;
+  margin-left: 39%;
+  font-weight: bold;
 }
 
 input {
@@ -190,5 +204,5 @@ input {
 
 .one-beer {
     margin-top: 8rem;
-    font-size: xx-large;
+    font-size: x-large;
   }
