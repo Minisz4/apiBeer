@@ -31,7 +31,7 @@ searchButton.addEventListener('click', () => {
 randomBeerButton.addEventListener('click', getRandomBeer);
 
 async function getRandomBeer() {
-  searchedContent.innerHTML = "";
+  searchedContent.textContent = "";
 
   try {
     const response = await fetch(`${searUrlApi}/random`);
@@ -47,7 +47,7 @@ async function getRandomBeer() {
 }
 
 async function searchBeer (searchWord) {
-  searchedContent.innerHTML = "";
+  searchedContent.textContent = "";
   try {
     const response = await fetch(`${searUrlApi}?beer_name=${searchWord}&page=${currentPage}&per_page=${beersPerPage}`);
     if (!response.ok) {
@@ -73,7 +73,7 @@ function displayNoResults() {
 }
 
 function displayNoImage() {
-  imgBox.innerHTML = ""; // 
+  imgBox.textContent = ""; // 
   const noImagePlaceholder = document.createElement('img');
   noImagePlaceholder.src = 'https://as2.ftcdn.net/v2/jpg/00/89/55/15/1000_F_89551596_LdHAZRwz3i4EM4J0NHNHy2hEUYDfXc0j.jpg'; // Provide the path to your default image
   noImagePlaceholder.alt = 'No Image';
@@ -81,19 +81,19 @@ function displayNoImage() {
 }
 
 function displayBeer(beer) {
-  searchedContent.innerHTML = "";
+  searchedContent.textContent = "";
   const beerElement = document.createElement('p');
   beerElement.classList.add('one-beer');
-  beerElement.innerHTML = beer.name;
+  beerElement.textContent = beer.name;
   beerElement.addEventListener('click', () =>  {
     displayBeerDetails(beer);
-    descriptionBox.innerHTML= "";
+    descriptionBox.textContent= "";
   });
   searchedContent.appendChild(beerElement);
 }
 
 function displayBeerList(beers) {
-  searchedContent.innerHTML = "";
+  searchedContent.textContent = "";
 
   const beerList = document.createElement('ul');
   beerList.classList.add('beer-list');
@@ -102,7 +102,7 @@ function displayBeerList(beers) {
     const beerItem = document.createElement('li');
     beerItem.textContent = beer.name;
     beerItem.addEventListener('click', () =>  {
-      descriptionBox.innerHTML= "";
+      descriptionBox.textContent= "";
       clearSelectedLi();
       markSelectedLi(beerItem);
       displayBeerDetails(beer);
@@ -121,7 +121,7 @@ function updatePageDisplay(totalBeers) {
 }
 
 function displayBeerDetails(beer) {
-  imgBox.innerHTML = "";
+  imgBox.textContent = "";
   if (beer.image_url !==null && beer.image_url !=="") { 
   beerImage.src = beer.image_url;
   imgBox.appendChild(beerImage);
@@ -129,7 +129,6 @@ function displayBeerDetails(beer) {
   displayNoImage();
 }
   beerName.textContent = beer.name;
- 
   console.log(beer);
 }
 
@@ -147,7 +146,7 @@ function markSelectedLi(beerItem) {
 function setupButtonListeners() {
   infoBtn.addEventListener("click", async () => {
     const selectedBeerName = beerName.textContent;
-    descriptionBox.innerHTML= "";
+    descriptionBox.textContent= "";
     
     try {
       const response = await fetch(`${searUrlApi}?beer_name=${selectedBeerName}`);
